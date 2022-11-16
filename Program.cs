@@ -1,13 +1,26 @@
 ﻿List<String> ToDo = new List<string>();
 List<String> ToDoDone = new List<string>();
-
+string[] greetings = File.ReadAllLines("greetings.txt");
+var RNG = new Random();
+var greetingId = RNG.Next(0, greetings.Length);
 int Exit = 0;
 int index = 0;
+bool save = true;
 while (Exit < 1)
 {
+    if (save == true)
+    {
+        ToDo.Add(File.ReadAllText("Todo list.txt"));
+        ToDoDone.Add(File.ReadAllText("ToDone list.txt"));
+        save = false;
+    }
+    else{
+    int ToDoSize = ToDo.Count;
+    int ToDoDoneSize = ToDoDone.Count;
+    int TotalSize = ToDoSize + ToDoDoneSize;
     Console.Clear();
-    Console.WriteLine("This is a to do list. \nPlease type in a number to select an option.");
-    Console.WriteLine("What would you like to do? \nYour options are: \n 1: View the entire list \n 2: View all of the to do items  \n 3: View all of the completed items \n 4: Add an item to the to do list \n 5: Mark a item as completed \n 6: View the stats \n 7: Exit");
+    Console.WriteLine($"{greetings[greetingId]} \nPlease type in a number to select an option.");
+    Console.WriteLine("What would you like to do? \nYour options are: \n 1: View the entire list \n 2: View all of the to do items  \n 3: View all of the completed items \n 4: Add an item to the to do list \n 5: Mark a item as completed \n 6 :Save \n 7: View the stats \n 8: Exit");
     string choice = Console.ReadLine();
     switch (choice)
     {
@@ -81,16 +94,19 @@ while (Exit < 1)
 
             break;
         case "6":
+            File.WriteAllLines("Todo list.txt", ToDo);
+            File.WriteAllLines("ToDone list.txt", ToDoDone);
+            File.AppendAllText("Stats.csv", $"Items to do: {ToDoSize},Items done: {ToDoDoneSize},Total Items: {TotalSize}\n");
+            break;
+        case "7":
             Console.Clear();
-            int ToDoSize = ToDo.Count;
-            int ToDoDoneSize = ToDoDone.Count;
-            int TotalSize = ToDoSize + ToDoDoneSize;
+            File.AppendAllText("Stats.csv", $"Items to do: {ToDoSize},Items done: {ToDoDoneSize},Total Items: {TotalSize}\n");
             Console.WriteLine("Stats");
             Console.WriteLine(" There are " + TotalSize + " total items. \n There are " + ToDoSize + " items to do. \n there are " + ToDoDoneSize + " items that are done.");
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
             break;
-        case "7":
+        case "8":
             Exit++;
             Console.Clear();
             break;
@@ -100,5 +116,6 @@ while (Exit < 1)
             Console.ReadKey();
             break;
     }
+}
 }
 
